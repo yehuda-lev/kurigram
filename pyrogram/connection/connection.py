@@ -58,6 +58,25 @@ class Connection:
         else:
             self.loop = asyncio.get_event_loop()
 
+        # Temporary workaround
+        if self.test_mode:
+            self.port = 80
+
+            if self.ipv6:
+                if self.dc_id == 1:
+                    self.server_address = "2001:b28:f23d:f001::e"
+                elif self.dc_id == 2:
+                    self.server_address = "2001:67c:4e8:f002::e"
+                elif self.dc_id == 3:
+                    self.server_address = "2001:b28:f23d:f003::e"
+            else:
+                if self.dc_id == 1:
+                    self.server_address = "149.154.175.10"
+                elif self.dc_id == 2:
+                    self.server_address = "149.154.167.40"
+                elif self.dc_id == 3:
+                    self.server_address = "149.154.175.117"
+
     async def connect(self) -> None:
         for i in range(Connection.MAX_CONNECTION_ATTEMPTS):
             self.protocol = self.protocol_factory(ipv6=self.ipv6, proxy=self.proxy, crypto_executor_workers=self.crypto_executor_workers, loop=self.loop)

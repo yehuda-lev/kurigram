@@ -1,4 +1,5 @@
 id	message
+API_GIFT_RESTRICTED_UPDATE_APP	Please update your Telegram app to send this gift.
 AUTH_KEY_DUPLICATED	The same authorization key (session file) was used in more than one place simultaneously, the current session was invalidated by the server for security reasons! You must delete your session file and log in again with your phone number or bot token.
 BANNED_RIGHTS_INVALID	You provided some invalid flags in the banned rights.
 BOT_PRECHECKOUT_FAILED	Bot precheckout is failed.
