@@ -236,7 +236,7 @@ class Client(Methods):
         loop (:py:class:`asyncio.AbstractEventLoop`, *optional*):
             Event loop.
 
-        init_connection_params (:obj:`~pyrogram.raw.base.JSONValue`, *optional*):
+        init_connection_params (``dict``, *optional*):
             Additional initConnection parameters.
             For now, only the tz_offset field is supported, for specifying timezone offset in seconds.
     """
@@ -305,7 +305,7 @@ class Client(Methods):
         fetch_topics: Optional[bool] = True,
         fetch_stories: Optional[bool] = True,
         fetch_stickers: Optional[bool] = True,
-        init_connection_params: Optional["raw.base.JSONValue"] = None,
+        init_connection_params: Optional[dict] = None,
         connection_factory: Type[Connection] = Connection,
         protocol_factory: Type[TCP] = TCPAbridged,
         loop: Optional[asyncio.AbstractEventLoop] = None
@@ -1462,54 +1462,47 @@ class Client(Methods):
     async def set_dc(
         self,
         dc_id: Optional[int] = None,
-        *,
         server_address: Optional[str] = None,
         port: Optional[int] = None
     ):
-        """Be careful with this method, you can easily break your session."""
+        """Set configuration for the specified datacenter.
+
+        .. note::
+
+            Be careful with this method, you can easily break your session.
+
+        Parameters:
+            dc_id (``int``, *optional*):
+                Datacenter identifier.
+                Defaults to the current datacenter.
+
+            server_address (``str``, *optional*):
+                Custom server address.
+
+            port (``int``, *optional*):
+                Custom port.
+        """
         if not self.__config:
             self.__config = await self.invoke(raw.functions.help.GetConfig())
 
         dc_id = dc_id or self.__config.this_dc
-
         dc_option = await self.get_dc_option(dc_id, ipv6=self.ipv6)
 
         server_address = server_address or dc_option.ip_address
         port = port or dc_option.port
 
-        if dc_id == self.__config.this_dc and (self.session.server_address != server_address or self.session.port != port):
-            await self.storage.server_address(server_address)
-            await self.storage.port(port)
+        await self.storage.dc_id(dc_id)
+        await self.storage.server_address(server_address)
+        await self.storage.port(port)
 
-            self.session.server_address = await self.storage.server_address()
-            self.session.port = await self.storage.port()
+        if self.session.server_address != server_address or self.session.port != port:
+            self.session.server_address = server_address
+            self.session.port = port
 
             await self.session.restart()
-            log.info("Changed the current session DC%s address to %s:%s", dc_id, server_address, port)
+            log.info("Changed session DC%s address to %s:%s", dc_id, server_address, port)
         else:
-            prod_session = self.sessions.get(dc_id)
-
-            if prod_session and (prod_session.server_address != server_address or prod_session.port != port):
-                prod_session.server_address = server_address
-                prod_session.port = port
-
-                await prod_session.restart()
-                log.info("Changed session DC%s address to %s:%s", dc_id, server_address, port)
-            else:
-                await self.get_session(dc_id, server_address=server_address, port=port)
-                log.info("Created new session DC%s with address %s:%s", dc_id, server_address, port)
-
-            media_session = self.media_sessions.get(dc_id)
-
-            if media_session and (media_session.server_address != server_address or media_session.port != port):
-                media_session.server_address = server_address
-                media_session.port = port
-
-                await media_session.restart()
-                log.info("Changed session DC%s (media) address to %s:%s", dc_id, server_address, port)
-            else:
-                await self.get_session(dc_id, is_media=True, server_address=server_address, port=port)
-                log.info("Created new session DC%s (media) with address %s:%s", dc_id, server_address, port)
+            log.info("Session DC%s address is already %s:%s", dc_id, server_address, port)
 
     def guess_mime_type(self, filename: Union[str, BytesIO]) -> Optional[str]:
         if isinstance(filename, BytesIO):

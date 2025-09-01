@@ -633,3 +633,37 @@ def from_inline_bytes(data: bytes, file_name: str = None) -> BytesIO:
     b.name = file_name or f"photo_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.jpg"
 
     return b
+
+
+def obj_to_jsonvalue(obj) -> "raw.base.JsonValue":
+    if obj is None:
+        return raw.types.JsonNull()
+    elif isinstance(obj, bool):
+        return raw.types.JsonBool(value=obj)
+    elif isinstance(obj, (int, float)):
+        return raw.types.JsonNumber(value=obj)
+    elif isinstance(obj, str):
+        return raw.types.JsonString(value=obj)
+    elif isinstance(obj, (list, tuple)):
+        return raw.types.JsonArray(value=[obj_to_jsonvalue(x) for x in obj])
+    elif isinstance(obj, dict):
+        return raw.types.JsonObject(value=[raw.types.JsonObjectValue(key=k, value=obj_to_jsonvalue(v)) for k, v in obj.items()])
+
+    raise TypeError(f"Unsupported type: {type(obj)}")
+
+
+def jsonvalue_to_obj(obj: "raw.base.JsonValue"):
+    if isinstance(obj, raw.types.JsonNull):
+        return None
+    elif isinstance(obj, raw.types.JsonBool):
+        return obj.value
+    elif isinstance(obj, raw.types.JsonNumber):
+        return obj.value
+    elif isinstance(obj, raw.types.JsonString):
+        return obj.value
+    elif isinstance(obj, raw.types.JsonArray):
+        return [jsonvalue_to_obj(x) for x in obj.value]
+    elif isinstance(obj, raw.types.JsonObject):
+        return {o.key: jsonvalue_to_obj(o.value) for o in obj.value}
+
+    raise TypeError(f"Unsupported type: {type(obj)}")

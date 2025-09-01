@@ -26,7 +26,7 @@ from io import BytesIO
 from typing import Any, Dict, List, Optional, Set
 
 import pyrogram
-from pyrogram import raw
+from pyrogram import raw, utils
 from pyrogram.connection import Connection
 from pyrogram.crypto import mtproto
 from pyrogram.errors import (
@@ -180,6 +180,11 @@ class Session:
 
             await self.send(raw.functions.Ping(ping_id=0), timeout=self.START_TIMEOUT)
 
+            init_connection_params = self.client.init_connection_params
+
+            if isinstance(init_connection_params, dict):
+                init_connection_params = utils.obj_to_jsonvalue(init_connection_params)
+
             if not self.is_cdn:
                 await self.send(
                     raw.functions.InvokeWithLayer(
@@ -193,7 +198,7 @@ class Session:
                             lang_pack=self.client.lang_pack,
                             lang_code=self.client.lang_code,
                             query=raw.functions.help.GetConfig(),
-                            params=self.client.init_connection_params,
+                            params=init_connection_params,
                         )
                     ),
                     timeout=self.START_TIMEOUT
