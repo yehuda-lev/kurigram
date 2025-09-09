@@ -54,6 +54,7 @@ from .phone_call_started import PhoneCallStarted
 from .privacy_rule import PrivacyRule
 from .restriction import Restriction
 from .stories_stealth_mode import StoriesStealthMode
+from .user_rating import UserRating
 from .user import User
 from .username import Username
 from .verification_status import VerificationStatus
@@ -82,6 +83,7 @@ __all__ = [
     "VerificationStatus",
     "Restriction",
     "StoriesStealthMode",
+    "UserRating",
     "ChatEvent",
     "FolderInviteLink",
     "ChatEventFilter",

@@ -34,7 +34,6 @@ class Connection:
         server_address: str,
         port: int,
         test_mode: bool,
-        ipv6: bool,
         proxy: dict,
         media: bool = False,
         protocol_factory: Type[TCP] = TCPAbridged,
@@ -45,7 +44,7 @@ class Connection:
         self.server_address = server_address
         self.port = port
         self.test_mode = test_mode
-        self.ipv6 = ipv6
+        self.ipv6 = ":" in server_address
         self.proxy = proxy
         self.media = media
         self.protocol_factory = protocol_factory
@@ -57,25 +56,6 @@ class Connection:
             self.loop = loop
         else:
             self.loop = asyncio.get_event_loop()
-
-        # Temporary workaround
-        if self.test_mode:
-            self.port = 80
-
-            if self.ipv6:
-                if self.dc_id == 1:
-                    self.server_address = "2001:b28:f23d:f001::e"
-                elif self.dc_id == 2:
-                    self.server_address = "2001:67c:4e8:f002::e"
-                elif self.dc_id == 3:
-                    self.server_address = "2001:b28:f23d:f003::e"
-            else:
-                if self.dc_id == 1:
-                    self.server_address = "149.154.175.10"
-                elif self.dc_id == 2:
-                    self.server_address = "149.154.167.40"
-                elif self.dc_id == 3:
-                    self.server_address = "149.154.175.117"
 
     async def connect(self) -> None:
         for i in range(Connection.MAX_CONNECTION_ATTEMPTS):

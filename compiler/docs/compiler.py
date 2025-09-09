@@ -435,6 +435,7 @@ def pyrogram_api():
             get_gift_upgrade_preview
             get_payment_form
             get_stars_balance
+            get_ton_balance
             get_upgraded_gift
             gift_premium_with_stars
             hide_gift
@@ -636,6 +637,7 @@ def pyrogram_api():
             FoundContacts
             PrivacyRule
             StoriesStealthMode
+            UserRating
             BotVerification
             BusinessBotRights
             ChatSettings
@@ -709,6 +711,11 @@ def pyrogram_api():
             Invoice
             LinkPreviewOptions
             GiftCode
+            GiftPurchaseLimit
+            GiftResaleParameters
+            GiftResalePrice
+            GiftResalePriceStar
+            GiftResalePriceTon
             GiftUpgradePreview
             CheckedGiftCode
             ChecklistTask

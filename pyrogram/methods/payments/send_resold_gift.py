@@ -28,7 +28,7 @@ class SendResoldGift:
         self: "pyrogram.Client",
         gift_link: str,
         new_owner_chat_id: Union[int, str],
-        star_count: int = None
+        price: "types.GiftResalePrice",
     ) -> Optional["types.Message"]:
         """Send an upgraded gift that is available for resale to another user or channel chat.
 
@@ -47,8 +47,8 @@ class SendResoldGift:
                 For your personal cloud (Saved Messages) you can simply use "me" or "self".
                 For a contact that exists in your Telegram address book you can use his phone number (str).
 
-            star_count (``int``, *optional*):
-                The amount of Telegram Stars required to pay for the gift.
+            price (:obj:`~pyrogram.types.GiftResalePrice`, *optional*):
+                The price that the user agreed to pay for the gift.
 
         Returns:
             :obj:`~pyrogram.types.Message`: On success, the sent message is returned.
@@ -56,8 +56,12 @@ class SendResoldGift:
         Example:
             .. code-block:: python
 
-                # Transfer gift to another user
-                await app.send_resold_gift(gift_link="https://t.me/nft/NekoHelmet-9215", new_owner_chat_id=123)
+                # Buy gift from telegram market and transfer it to another user
+                await app.send_resold_gift(
+                    gift_link="https://t.me/nft/NekoHelmet-9215",
+                    new_owner_chat_id=123,
+                    price=types.GiftResalePriceStar(star_count=100_000)
+                )
         """
         match = self.UPGRADED_GIFT_RE.match(gift_link)
 
@@ -70,7 +74,8 @@ class SendResoldGift:
 
         invoice = raw.types.InputInvoiceStarGiftResale(
             slug=match.group(1),
-            to_id=peer
+            to_id=peer,
+            ton=isinstance(price, types.GiftResalePriceTon)
         )
 
         form = await self.invoke(
@@ -79,12 +84,18 @@ class SendResoldGift:
             )
         )
 
-        if star_count is not None:
-            if star_count < 0:
-                raise ValueError("Invalid amount of Telegram Stars specified.")
+        if isinstance(price, types.GiftResalePriceTon):
+            amount = price.toncoin_cent_count
+        else:
+            amount = price.star_count
 
-            if form.invoice.prices[0].amount > star_count:
-                raise ValueError("Have not enough Telegram Stars.")
+        if amount < 0:
+            raise ValueError("Invalid price specified.")
+
+        if form.invoice.prices[0].amount > amount:
+            raise ValueError("Have not enough {}".format(
+                "Toncoins" if isinstance(price, types.GiftResalePriceTon) else "Telegram Stars"
+            ))
 
         r = await self.invoke(
             raw.functions.payments.SendStarsForm(

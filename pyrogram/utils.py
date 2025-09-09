@@ -667,3 +667,11 @@ def jsonvalue_to_obj(obj: "raw.base.JsonValue"):
         return {o.key: jsonvalue_to_obj(o.value) for o in obj.value}
 
     raise TypeError(f"Unsupported type: {type(obj)}")
+
+
+def from_nano(nano: int) -> float:
+    return nano / 1e9
+
+
+def to_nano(amount: float) -> int:
+    return int(amount * 1e9)

@@ -25,6 +25,7 @@ import platform
 import re
 import shutil
 import sys
+import time
 from concurrent.futures.thread import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from hashlib import sha256
@@ -110,6 +111,9 @@ class Client(Methods):
 
         ipv6 (``bool``, *optional*):
             Pass True to connect to Telegram using IPv6.
+            If the session was previously used with IPv4,
+            the first request will be made via IPv4,
+            after which the server address will be updated (works both ways).
             Defaults to False (IPv4).
 
         proxy (``dict``, *optional*):
@@ -373,6 +377,10 @@ class Client(Methods):
         self.dispatcher: Dispatcher = Dispatcher(self)
 
         self.rnd_id = MsgId
+        self._last_sync_time = time.time()
+        self._last_monotonic = time.monotonic()
+
+        self._is_server_time_synced = False
 
         self.parser: Parser = Parser(self)
 
@@ -414,7 +422,7 @@ class Client(Methods):
         else:
             self.loop = asyncio.get_event_loop()
 
-        self.__config = None
+        self.__config: "raw.types.Config" = None
 
     def __enter__(self):
         return self.start()
@@ -898,8 +906,14 @@ class Client(Methods):
             await self.storage.api_id(self.api_id)
 
             await self.storage.dc_id(2)
-            await self.storage.server_address("149.154.167.51")
-            await self.storage.port(443)
+
+            if self.test_mode:
+                await self.storage.server_address("2001:67c:4e8:f002::e" if self.ipv6 else "149.154.167.40")
+                await self.storage.port(80)
+            else:
+                await self.storage.server_address("2001:67c:4e8:f002::a" if self.ipv6 else "149.154.167.51")
+                await self.storage.port(443)
+
             await self.storage.date(0)
 
             await self.storage.test_mode(self.test_mode)
@@ -1360,7 +1374,7 @@ class Client(Methods):
                 Custom port to connect to.
                 Used only when creating a new session.
         """
-        if dc_id == await self.storage.dc_id():
+        if dc_id == await self.storage.dc_id() and not is_media:
             return self.session
 
         sessions = self.media_sessions if is_media else self.sessions
@@ -1415,13 +1429,16 @@ class Client(Methods):
 
     async def get_dc_option(
         self,
-        dc_id: int,
+        dc_id: int = None,
         is_media: bool = False,
         is_cdn: bool = False,
         ipv6: bool = False
     ) -> "raw.types.DcOption":
         if not self.__config:
             self.__config = await self.invoke(raw.functions.help.GetConfig())
+
+        if dc_id is None:
+            dc_id = self.__config.this_dc
 
         options = [dc for dc in self.__config.dc_options if dc.id == dc_id and dc.ipv6 == ipv6] # type: List[raw.types.DcOption]
 
@@ -1503,6 +1520,19 @@ class Client(Methods):
             log.info("Changed session DC%s address to %s:%s", dc_id, server_address, port)
         else:
             log.info("Session DC%s address is already %s:%s", dc_id, server_address, port)
+
+    @property
+    def server_time(self) -> float:
+        return self._last_sync_time + (time.monotonic() - self._last_monotonic)
+
+    def _set_server_time(self, msg_id: int):
+        if self._is_server_time_synced:
+            return
+
+        self._last_sync_time = msg_id / float(2**32)
+        self._last_monotonic = time.monotonic()
+        self._is_server_time_synced = True
+        log.info(f"Time synced: {utils.timestamp_to_datetime(self._last_sync_time)}")
 
     def guess_mime_type(self, filename: Union[str, BytesIO]) -> Optional[str]:
         if isinstance(filename, BytesIO):

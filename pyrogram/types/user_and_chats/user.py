@@ -345,6 +345,15 @@ class User(Object, Update):
             Information about bot verification.
             Returned only in :meth:`~pyrogram.Client.get_me`.
 
+        rating (:obj:`~pyrogram.types.UserRating`, *optional*):
+            Description of the current rating of the user.
+
+        pending_rating (:obj:`~pyrogram.types.UserRating`, *optional*):
+            Description of the rating of the user after the next change.
+
+        pending_rating_date (:py:obj:`~datetime.datetime`, *optional*):
+            Date when rating of the user will change to pending_rating.
+
         accepted_gift_types (:obj:`~pyrogram.types.AcceptedGiftTypes`, *optional*):
             Information about gifts that can be received by the user.
             Returned only in :meth:`~pyrogram.Client.get_me`
@@ -445,6 +454,9 @@ class User(Object, Update):
         personal_channel_message: Optional["types.Message"] = None,
         gift_count: Optional[int] = None,
         bot_verification: Optional["types.BotVerification"] = None,
+        rating: Optional["types.UserRating"] = None,
+        pending_rating: Optional["types.UserRating"] = None,
+        pending_rating_date: Optional[datetime] = None,
         accepted_gift_types: Optional["types.AcceptedGiftTypes"] = None,
         raw: Optional[Union["raw.base.User", "raw.base.UserStatus"]] = None
     ):
@@ -529,6 +541,9 @@ class User(Object, Update):
         self.personal_channel_message = personal_channel_message
         self.gift_count = gift_count
         self.bot_verification = bot_verification
+        self.rating = rating
+        self.pending_rating = pending_rating
+        self.pending_rating_date = pending_rating_date
         self.accepted_gift_types = accepted_gift_types
         self.raw = raw
 
@@ -694,10 +709,10 @@ class User(Object, Update):
             user.bot_verification,
             users
         )
+        parsed_user.rating = types.UserRating._parse(user.stars_rating)
+        parsed_user.pending_rating = types.UserRating._parse(user.stars_my_pending_rating)
+        parsed_user.pending_rating_date = utils.timestamp_to_datetime(user.stars_my_pending_rating_date)
         parsed_user.accepted_gift_types = types.AcceptedGiftTypes._parse(user.disallowed_gifts)
-        # parsed_user.stars_rating = user.stars_rating
-        # parsed_user.stars_my_pending_rating = user.stars_my_pending_rating
-        # parsed_user.stars_my_pending_rating_date = user.stars_my_pending_rating_date
 
         return parsed_user
 

@@ -19,14 +19,14 @@
 import re
 
 import pyrogram
-from pyrogram import raw
+from pyrogram import raw, types
 
 
 class SetGiftResalePrice:
     async def set_gift_resale_price(
         self: "pyrogram.Client",
         owned_gift_id: str,
-        resale_star_count: int
+        price: "types.GiftResalePrice" = None,
     ) -> bool:
         """Change resale price of a unique gift owned by the current user.
 
@@ -39,8 +39,9 @@ class SetGiftResalePrice:
                 For a channel gift, you can use the packed format `chatID_savedID` (str).
                 For a upgraded gift, you can use the gift link.
 
-            resale_star_count (``int``):
-                The new price for the unique gift. Pass 0 to disallow gift resale.
+            price (:obj:`~pyrogram.types.GiftResalePrice`, *optional*):
+                The new price for the unique gift.
+                Pass None to disallow gift resale.
 
         Returns:
             ``bool``: On success, True is returned.
@@ -49,7 +50,19 @@ class SetGiftResalePrice:
             .. code-block:: python
 
                 # Change resale price of a unique gift
-                await app.set_gift_resale_price(owned_gift_id="123456", resale_star_count=100)
+                await app.set_gift_resale_price(
+                    owned_gift_id="123456",
+                    price=types.GiftResalePriceStar(star_count=100)
+                )
+
+                # Change resale price of a unique gift to 10 TONs
+                await app.set_gift_resale_price(
+                    owned_gift_id="123456",
+                    price=types.GiftResalePriceTon(toncoin_cent_count=10000000000) # You can use utils.to_nano(10) for same result
+                )
+
+                # Disallow resale of a unique gift
+                await app.set_gift_resale_price(owned_gift_id="123456")
         """
         if not isinstance(owned_gift_id, str):
             raise ValueError(f"owned_gift_id has to be str, but {type(owned_gift_id)} was provided")
@@ -74,7 +87,7 @@ class SetGiftResalePrice:
         await self.invoke(
             raw.functions.payments.UpdateStarGiftPrice(
                 stargift=stargift,
-                resell_amount=raw.types.StarsAmount(amount=resale_star_count, nanos=0)
+                resell_amount=raw.types.StarsAmount(amount=0, nanos=0) if price is None else price.write()
             )
         )
 

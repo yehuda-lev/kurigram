@@ -119,7 +119,7 @@ class Session:
         self.auth_key_id = sha1(auth_key).digest()[-8:]
 
         self.session_id = os.urandom(8)
-        self.msg_factory = MsgFactory()
+        self.msg_factory = MsgFactory(self.client)
 
         self.salt = 0
 
@@ -165,7 +165,6 @@ class Session:
             server_address=self.server_address,
             port=self.port,
             test_mode=self.test_mode,
-            ipv6=self.client.ipv6,
             proxy=self.client.proxy,
             media=self.is_media,
             protocol_factory=self.client.protocol_factory,
@@ -302,6 +301,9 @@ class Session:
         log.debug("Received: %s", data)
 
         for msg in messages:
+            if msg.seq_no == 0:
+                self.client._set_server_time(msg.msg_id)
+
             if msg.seq_no % 2 != 0:
                 if msg.msg_id in self.pending_acks:
                     continue

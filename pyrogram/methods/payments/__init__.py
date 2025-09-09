@@ -25,6 +25,7 @@ from .get_chat_gifts_count import GetChatGiftsCount
 from .get_gift_upgrade_preview import GetGiftUpgradePreview
 from .get_payment_form import GetPaymentForm
 from .get_stars_balance import GetStarsBalance
+from .get_ton_balance import GetTonBalance
 from .get_upgraded_gift import GetUpgradedGift
 from .gift_premium_with_stars import GiftPremiumWithStars
 from .hide_gift import HideGift
@@ -49,6 +50,7 @@ class Payments(
     GetGiftUpgradePreview,
     GetPaymentForm,
     GetStarsBalance,
+    GetTonBalance,
     GetUpgradedGift,
     GiftPremiumWithStars,
     HideGift,

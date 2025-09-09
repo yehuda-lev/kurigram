@@ -21,6 +21,7 @@ import base64
 import struct
 from typing import List, Tuple
 
+from pyrogram import raw
 
 class Storage(ABC):
     """
@@ -61,7 +62,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_peers(self, peers: List[Tuple[int, int, str, str]]):
+    async def update_peers(self, peers: List[Tuple[int, int, str, str]]) -> None:
         """
         Update the peers table with the provided information.
 
@@ -78,7 +79,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_usernames(self, usernames: List[Tuple[int, List[str]]]):
+    async def update_usernames(self, usernames: List[Tuple[int, List[str]]]) -> None:
         """
         Update the usernames table with the provided information.
 
@@ -93,7 +94,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_state(self, update_state: Tuple[int, int, int, int, int] = object):
+    async def update_state(self, update_state: Tuple[int, int, int, int, int] = object) -> Tuple[int, int, int, int, int]:
         """Get or set the update state of the current session.
 
         Parameters:
@@ -109,7 +110,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_peer_by_id(self, peer_id: int):
+    async def get_peer_by_id(self, peer_id: int) -> "raw.base.InputPeer":
         """Retrieve a peer by its ID.
 
         Parameters:
@@ -119,7 +120,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_peer_by_username(self, username: str):
+    async def get_peer_by_username(self, username: str) -> "raw.base.InputPeer":
         """Retrieve a peer by its username.
 
         Parameters:
@@ -129,7 +130,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_peer_by_phone_number(self, phone_number: str):
+    async def get_peer_by_phone_number(self, phone_number: str) -> "raw.base.InputPeer":
         """Retrieve a peer by its phone number.
 
         Parameters:
@@ -139,7 +140,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def dc_id(self, value: int = object):
+    async def dc_id(self, value: int = object) -> int:
         """Get or set the DC ID of the current session.
 
         Parameters:
@@ -149,7 +150,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def api_id(self, value: int = object):
+    async def api_id(self, value: int = object) -> int:
         """Get or set the API ID of the current session.
 
         Parameters:
@@ -159,7 +160,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def server_address(self, value: str = object):
+    async def server_address(self, value: str = object) -> str:
         """Get or set the server address of the current session.
 
         Parameters:
@@ -169,7 +170,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def port(self, value: int = object):
+    async def port(self, value: int = object) -> int:
         """Get or set the server port of the current session.
 
         Parameters:
@@ -179,7 +180,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def test_mode(self, value: bool = object):
+    async def test_mode(self, value: bool = object) -> bool:
         """Get or set the test mode of the current session.
 
         Parameters:
@@ -189,7 +190,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def auth_key(self, value: bytes = object):
+    async def auth_key(self, value: bytes = object) -> bytes:
         """Get or set the authorization key of the current session.
 
         Parameters:
@@ -199,7 +200,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def date(self, value: int = object):
+    async def date(self, value: int = object) -> int:
         """Get or set the date of the current session.
 
         Parameters:
@@ -209,7 +210,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def user_id(self, value: int = object):
+    async def user_id(self, value: int = object) -> int:
         """Get or set the user ID of the current session.
 
         Parameters:
@@ -219,7 +220,7 @@ class Storage(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def is_bot(self, value: bool = object):
+    async def is_bot(self, value: bool = object) -> bool:
         """Get or set the bot flag of the current session.
 
         Parameters:
@@ -228,7 +229,7 @@ class Storage(ABC):
         """
         raise NotImplementedError
 
-    async def export_session_string(self):
+    async def export_session_string(self) -> str:
         """Exports the session string for the current session.
 
         Returns:

@@ -295,6 +295,15 @@ class Chat(Object):
         bot_verification (:obj:`~pyrogram.types.BotVerification`, *optional*):
             Information about bot verification.
 
+        rating (:obj:`~pyrogram.types.UserRating`, *optional*):
+            Description of the current rating of the user.
+
+        pending_rating (:obj:`~pyrogram.types.UserRating`, *optional*):
+            Description of the rating of the user after the next change.
+
+        pending_rating_date (:py:obj:`~datetime.datetime`, *optional*):
+            Date when rating of the user will change to pending_rating.
+
         settings (:obj:`~pyrogram.types.ChatSettings`, *optional*):
             Chat settings.
             Returned only in :meth:`~pyrogram.Client.get_chat`.
@@ -574,6 +583,9 @@ class Chat(Object):
         reactions_limit: Optional[int] = None,
         gift_count: Optional[int] = None,
         bot_verification: Optional["types.BotVerification"] = None,
+        rating: Optional["types.UserRating"] = None,
+        pending_rating: Optional["types.UserRating"] = None,
+        pending_rating_date: Optional[datetime] = None,
         settings: Optional["types.ChatSettings"] = None,
         admins_count: Optional[int] = None,
         kicked_count: Optional[int] = None,
@@ -704,6 +716,9 @@ class Chat(Object):
         self.reactions_limit = reactions_limit
         self.gift_count = gift_count
         self.bot_verification = bot_verification
+        self.rating = rating
+        self.pending_rating = pending_rating
+        self.pending_rating_date = pending_rating_date
         self.settings = settings
         self.admins_count = admins_count
         self.kicked_count = kicked_count
@@ -1022,6 +1037,9 @@ class Chat(Object):
             user.bot_verification,
             users
         )
+        parsed_chat.rating = types.UserRating._parse(user.stars_rating)
+        parsed_chat.pending_rating = types.UserRating._parse(user.stars_my_pending_rating)
+        parsed_chat.pending_rating_date = utils.timestamp_to_datetime(user.stars_my_pending_rating_date)
         parsed_chat.paid_message_star_count = user.send_paid_messages_stars
         parsed_chat.display_gifts_button = user.display_gifts_button
         parsed_chat.accepted_gift_types = types.AcceptedGiftTypes._parse(user.disallowed_gifts)

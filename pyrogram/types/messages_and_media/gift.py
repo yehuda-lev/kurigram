@@ -71,6 +71,9 @@ class Gift(Object):
         last_sale_date (:py:obj:`~datetime.datetime`, *optional*):
             Date when the star gift was last purchased.
 
+        locked_until_date (:py:obj:`~datetime.datetime`, *optional*):
+            Date when the star gift will be available for purchase.
+
         from_user (:obj:`~pyrogram.types.User`, *optional*):
             User who sent the star gift.
 
@@ -98,32 +101,30 @@ class Gift(Object):
         transfer_price (``int``, *optional*):
             The number of stars you need to transfer this gift.
 
-        resale_price (``int``, *optional*):
-            Number of Telegram Stars that must be paid to buy the gift and send it to someone else.
-
-        last_resale_star_count (``int``, *optional*):
-            Number of Telegram Stars that were paid by the sender for the gift.
-
-        last_resale_ton_count (``int``, *optional*):
-            Number of TON that were paid by the sender for the gift.
-
         number (``int``, *optional*):
             Unique number of the upgraded gift among gifts upgraded from the same gift.
+
+        total_upgraded_count (``int``, *optional*):
+            Total number of gifts that were upgraded from the same gift.
+
+        max_upgraded_count (``int``, *optional*):
+            The maximum number of gifts that can be upgraded from the same gift.
 
         available_resale_amount (``int``, *optional*):
             The number of gifts available for resale.
             Returned only if is_limited is True.
 
-        available_amount (``int``, *optional*):
-            The number of gifts available for purchase.
-            Returned only if is_limited is True.
+        user_limits (:obj:`~pyrogram.types.GiftPurchaseLimit`, *optional*):
+            Number of times the gift can be purchased by the current user.
 
-        total_amount (``int``, *optional*):
-            Total amount of gifts.
-            Returned only if is_limited is True.
+        overall_limits (:obj:`~pyrogram.types.GiftPurchaseLimit`, *optional*):
+            Number of times the gift can be purchased all users.
 
         publisher_chat (:obj:`~pyrogram.types.Chat`, *optional*):
             Information about the chat that published the gift.
+
+        resale_parameters (:obj:`~pyrogram.types.GiftResaleParameters`, *optional*):
+            Resale parameters of the gift.
 
         can_upgrade (``bool``, *optional*):
             True, if the gift can be upgraded.
@@ -162,8 +163,11 @@ class Gift(Object):
         is_transferred (``bool``, *optional*):
             True, if the gift was transferred.
 
-        is_birthday (``bool``, *optional*):
+        is_for_birthday (``bool``, *optional*):
             True, if the gift is a birthday gift.
+
+        is_premium (``bool``, *optional*):
+            True, if the gift can be bought only by Telegram Premium users.
 
         is_pinned (``bool``, *optional*):
             True, if the gift is pinned.
@@ -188,6 +192,7 @@ class Gift(Object):
         date: Optional[datetime] = None,
         first_sale_date: Optional[datetime] = None,
         last_sale_date: Optional[datetime] = None,
+        locked_until_date: Optional[datetime] = None,
         from_user: Optional["types.User"] = None,
         owner: Optional["types.Chat"] = None,
         owner_name: Optional[str] = None,
@@ -197,19 +202,19 @@ class Gift(Object):
         convert_price: Optional[int] = None,
         upgrade_price: Optional[int] = None,
         transfer_price: Optional[int] = None,
-        resale_price: Optional[int] = None,
-        last_resale_star_count: Optional[int] = None,
-        last_resale_ton_count: Optional[int] = None,
         upgrade_message_id: Optional[int] = None,
         name: Optional[str] = None,
         title: Optional[str] = None,
         collectible_id: Optional[int] = None,
         attributes: Optional[List["types.GiftAttribute"]] = None,
         number: Optional[int] = None,
+        total_upgraded_count: Optional[int] = None,
+        max_upgraded_count: Optional[int] = None,
         available_resale_amount: Optional[int] = None,
-        available_amount: Optional[int] = None,
-        total_amount: Optional[int] = None,
+        user_limits: Optional["types.GiftPurchaseLimit"] = None,
+        overall_limits: Optional["types.GiftPurchaseLimit"] = None,
         publisher_chat: Optional["types.Chat"] = None,
+        resale_parameters: Optional["types.GiftResaleParameters"] = None,
         can_upgrade: Optional[bool] = None,
         can_export_at: Optional[datetime] = None,
         can_transfer_at: Optional[datetime] = None,
@@ -222,7 +227,8 @@ class Gift(Object):
         is_upgraded: Optional[bool] = None,
         is_refunded: Optional[bool] = None,
         is_transferred: Optional[bool] = None,
-        is_birthday: Optional[bool] = None,
+        is_for_birthday: Optional[bool] = None,
+        is_premium: Optional[bool] = None,
         is_pinned: Optional[bool] = None,
         raw: Optional["raw.base.StarGift"] = None
     ):
@@ -236,6 +242,7 @@ class Gift(Object):
         self.date = date
         self.first_sale_date = first_sale_date
         self.last_sale_date = last_sale_date
+        self.locked_until_date = locked_until_date
         self.from_user = from_user
         self.owner = owner
         self.owner_name = owner_name
@@ -245,19 +252,19 @@ class Gift(Object):
         self.convert_price = convert_price
         self.upgrade_price = upgrade_price
         self.transfer_price = transfer_price
-        self.resale_price = resale_price
-        self.last_resale_star_count = last_resale_star_count
-        self.last_resale_ton_count = last_resale_ton_count
         self.upgrade_message_id = upgrade_message_id
         self.name = name
         self.title = title
         self.collectible_id = collectible_id
         self.attributes = attributes
         self.number = number
+        self.total_upgraded_count = total_upgraded_count
+        self.max_upgraded_count = max_upgraded_count
         self.available_resale_amount = available_resale_amount
-        self.available_amount = available_amount
-        self.total_amount = total_amount
+        self.user_limits = user_limits
+        self.overall_limits = overall_limits
         self.publisher_chat = publisher_chat
+        self.resale_parameters = resale_parameters
         self.can_upgrade = can_upgrade
         self.can_export_at = can_export_at
         self.can_transfer_at = can_transfer_at
@@ -270,7 +277,8 @@ class Gift(Object):
         self.is_upgraded = is_upgraded
         self.is_refunded = is_refunded
         self.is_transferred = is_transferred
-        self.is_birthday = is_birthday
+        self.is_for_birthday = is_for_birthday
+        self.is_premium = is_premium
         self.is_pinned = is_pinned
         self.raw = raw
 
@@ -304,14 +312,16 @@ class Gift(Object):
             price=star_gift.stars,
             convert_price=star_gift.convert_stars,
             upgrade_price=star_gift.upgrade_stars,
-            available_amount=star_gift.availability_remains,
             available_resale_amount=star_gift.availability_resale,
-            total_amount=star_gift.availability_total,
+            user_limits=types.GiftPurchaseLimit._parse(star_gift.per_user_total, star_gift.per_user_remains),
+            overall_limits=types.GiftPurchaseLimit._parse(star_gift.availability_total, star_gift.availability_remains),
             is_limited=star_gift.limited,
             is_sold_out=star_gift.sold_out,
-            is_birthday=star_gift.birthday,
+            is_for_birthday=star_gift.birthday,
+            is_premium=star_gift.require_premium,
             first_sale_date=utils.timestamp_to_datetime(star_gift.first_sale_date),
             last_sale_date=utils.timestamp_to_datetime(star_gift.last_sale_date),
+            locked_until_date=utils.timestamp_to_datetime(star_gift.locked_until_date),
             publisher_chat=types.Chat._parse_chat(client, chats.get(utils.get_raw_peer_id(star_gift.released_by))),
             raw=star_gift,
             client=client
@@ -329,16 +339,6 @@ class Gift(Object):
 
         owner_id = utils.get_raw_peer_id(star_gift.owner_id)
 
-        last_resale_star_count = None
-        last_resale_ton_count = None
-
-        if star_gift.resell_amount:
-            for currency in star_gift.resell_amount:
-                if isinstance(currency, raw.types.StarsAmount):
-                    last_resale_star_count = currency.amount
-                elif isinstance(currency, raw.types.StarsTonAmount):
-                    last_resale_ton_count = currency.amount
-
         return Gift(
             id=star_gift.id,
             name=star_gift.slug,
@@ -348,13 +348,14 @@ class Gift(Object):
                 [await types.GiftAttribute._parse(client, attr, users, chats) for attr in star_gift.attributes]
             ) or None,
             number=star_gift.availability_issued,
-            total_amount=star_gift.availability_total,
+            total_upgraded_count=star_gift.availability_total,
+            max_upgraded_count=star_gift.availability_issued,
+            is_premium=star_gift.require_premium,
             owner=types.Chat._parse_chat(client, users.get(owner_id) or chats.get(owner_id)),
             owner_name=star_gift.owner_name,
             owner_address=star_gift.owner_address,
             gift_address=star_gift.gift_address,
-            last_resale_star_count=last_resale_star_count,
-            last_resale_ton_count=last_resale_ton_count,
+            resale_parameters=types.GiftResaleParameters._parse(star_gift.resell_amount, star_gift.resale_ton_only),
             publisher_chat=types.Chat._parse_chat(client, chats.get(utils.get_raw_peer_id(star_gift.released_by))),
             is_upgraded=True,
             raw=star_gift,
@@ -626,7 +627,7 @@ class Gift(Object):
             )
         )
 
-    async def buy(self, new_owner_chat_id: Optional[Union[int, str]] = None, star_count: Optional[int] = None) -> Optional["types.Message"]:
+    async def buy(self, new_owner_chat_id: Optional[Union[int, str]] = None, price: Optional["types.GiftResalePrice"] = None) -> Optional["types.Message"]:
         """Bound method *buy* of :obj:`~pyrogram.types.Gift`.
 
         .. note::
@@ -650,10 +651,16 @@ class Gift(Object):
         if new_owner_chat_id is None:
             new_owner_chat_id = "me"
 
+        if price is None:
+            if self.resale_parameters.toncoin_only:
+                price = types.GiftResalePriceTon(toncoin_cent_count=self.resale_parameters.toncoin_cent_count)
+            else:
+                price = types.GiftResalePriceStar(star_count=self.resale_parameters.star_count)
+
         return await self._client.send_resold_gift(
             gift_link=self.link,
             new_owner_chat_id=new_owner_chat_id,
-            star_count=star_count
+            price=price
         )
 
     async def send(

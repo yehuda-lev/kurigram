@@ -47,6 +47,9 @@ from .game import Game
 from .general_forum_topic_hidden import GeneralForumTopicHidden
 from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .gift_code import GiftCode
+from .gift_purchase_limit import GiftPurchaseLimit
+from .gift_resale_parameters import GiftResaleParameters
+from .gift_resale_price import GiftResalePrice, GiftResalePriceStar, GiftResalePriceTon
 from .gift_upgrade_preview import GiftUpgradePreview
 from .invoice import Invoice
 from .link_preview_options import LinkPreviewOptions
@@ -152,6 +155,11 @@ __all__ = [
     "GeneralForumTopicHidden",
     "GeneralForumTopicUnhidden",
     "GiftCode",
+    "GiftPurchaseLimit",
+    "GiftResaleParameters",
+    "GiftResalePrice",
+    "GiftResalePriceStar",
+    "GiftResalePriceTon",
     "GiftUpgradePreview",
     "Giveaway",
     "InputChecklistTask",

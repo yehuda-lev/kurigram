@@ -114,6 +114,12 @@ CREATE TABLE update_state
 );
 """
 
+TEST = {
+    1: "149.154.175.10",
+    2: "149.154.167.40",
+    3: "149.154.175.117"
+}
+
 PROD = {
     1: "149.154.175.53",
     2: "149.154.167.51",
@@ -204,14 +210,19 @@ class SQLiteStorage(Storage):
             version += 1
 
         if version == 6:
-            address = PROD[await self.dc_id()]
+            if await self.test_mode():
+                address = TEST[await self.dc_id()]
+                port = 80
+            else:
+                address = PROD[await self.dc_id()]
+                port = 443
 
             with self.conn:
                 self.conn.execute("ALTER TABLE sessions ADD server_address TEXT;")
                 self.conn.execute("ALTER TABLE sessions ADD port INTEGER;")
 
                 self.conn.execute("UPDATE sessions SET server_address = ?;", (address,))
-                self.conn.execute("UPDATE sessions SET port = 443;")
+                self.conn.execute("UPDATE sessions SET port = ?;", (port,))
 
             version += 1
 
@@ -270,8 +281,14 @@ class SQLiteStorage(Storage):
                 )
 
                 await self.dc_id(dc_id)
-                await self.server_address(PROD[dc_id])
-                await self.port(443)
+
+                if test_mode:
+                    await self.server_address(TEST[dc_id])
+                    await self.port(80)
+                else:
+                    await self.server_address(PROD[dc_id])
+                    await self.port(443)
+
                 await self.api_id(api_id)
                 await self.test_mode(test_mode)
                 await self.auth_key(auth_key)
