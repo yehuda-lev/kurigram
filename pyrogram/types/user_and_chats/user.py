@@ -738,7 +738,7 @@ class User(Object, Update):
         parsed_user.rating = types.UserRating._parse(user.stars_rating)
         parsed_user.pending_rating = types.UserRating._parse(user.stars_my_pending_rating)
         parsed_user.pending_rating_date = utils.timestamp_to_datetime(user.stars_my_pending_rating_date)
-        parsed_user.accepted_gift_types = types.AcceptedGiftTypes._parse(user.disallowed_gifts)
+        parsed_user.accepted_gift_types = types.AcceptedGiftTypes._parse(user.disallowed_stargifts)
 
         return parsed_user
 
