@@ -45,6 +45,7 @@ from .get_direct_messages_chat_topic_history import GetDirectMessagesChatTopicHi
 from .get_discussion_message import GetDiscussionMessage
 from .get_discussion_replies import GetDiscussionReplies
 from .get_discussion_replies_count import GetDiscussionRepliesCount
+from .get_main_web_app import GetMainWebApp
 from .get_media_group import GetMediaGroup
 from .get_messages import GetMessages
 from .get_scheduled_messages import GetScheduledMessages
@@ -52,6 +53,7 @@ from .get_stickers import GetStickers
 from .get_web_app_link_url import GetWebAppLinkUrl
 from .get_web_app_url import GetWebAppUrl
 from .mark_checklist_tasks_as_done import MarkChecklistTasksAsDone
+from .open_web_app import OpenWebApp
 from .read_chat_history import ReadChatHistory
 from .read_mentions import ReadMentions
 from .read_reactions import ReadReactions
@@ -116,6 +118,7 @@ class Messages(
     GetWebAppLinkUrl,
     GetWebAppUrl,
     MarkChecklistTasksAsDone,
+    OpenWebApp,
     SendAudio,
     SendChatAction,
     SendChecklist,
@@ -168,6 +171,7 @@ class Messages(
     SendReaction,
     GetDiscussionReplies,
     GetDiscussionRepliesCount,
+    GetMainWebApp,
     StreamMedia,
     TranslateMessageText,
     TranslateText,

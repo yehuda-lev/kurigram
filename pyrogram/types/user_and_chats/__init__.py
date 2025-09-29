@@ -38,7 +38,7 @@ from .chat_member import ChatMember
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
-from .chat_privileges import ChatPrivileges
+from .chat_administrator_rights import ChatAdministratorRights
 from .chat_reactions import ChatReactions
 from .chat_settings import ChatSettings
 from .dialog import Dialog
@@ -100,7 +100,7 @@ __all__ = [
     "ChatMemberUpdated",
     "VideoChatScheduled",
     "ChatJoinRequest",
-    "ChatPrivileges",
+    "ChatAdministratorRights",
     "ChatJoiner",
     "EmojiStatus",
     "Folder",

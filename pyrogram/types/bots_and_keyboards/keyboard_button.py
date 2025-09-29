@@ -117,8 +117,8 @@ class KeyboardButton(Object):
                         bot_is_member=getattr(b.peer_type, "bot_participant", None),
                         chat_has_username=getattr(b.peer_type, "has_username", None),
                         chat_is_forum=getattr(b.peer_type, "forum", None),
-                        user_administrator_rights=types.ChatPrivileges._parse(user_privileges),
-                        bot_administrator_rights=types.ChatPrivileges._parse(bot_privileges)
+                        user_administrator_rights=types.ChatAdministratorRights._parse(user_privileges),
+                        bot_administrator_rights=types.ChatAdministratorRights._parse(bot_privileges)
                     )
                 )
 

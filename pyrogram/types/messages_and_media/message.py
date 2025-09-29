@@ -5974,16 +5974,13 @@ class Message(Object, Update):
                         "This button requires a bot as the sender"
                     )
 
-                r = await self._client.invoke(
-                    raw.functions.messages.RequestWebView(
-                        peer=await self._client.resolve_peer(self.chat.id),
-                        bot=await self._client.resolve_peer(bot_peer_id),
-                        url=web_app.url,
-                        platform=self._client.client_platform.value,
-                        # TODO
-                    )
+                return await self._client.open_web_app(
+                    chat_id=self.chat.id,
+                    bot_user_id=bot_peer_id,
+                    url=web_app.url,
+                    message_thread_id=self.message_thread_id,
+                    direct_messages_topic_id=self.direct_messages_topic_id,
                 )
-                return r.url
             elif button.user_id:
                 return await self._client.get_chat(
                     button.user_id,

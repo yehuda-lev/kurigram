@@ -68,7 +68,7 @@ class ChatMember(Object):
         permissions (:obj:`~pyrogram.types.ChatPermissions`, *optional*):
             Restricted only. Restricted actions that a non-administrator user is allowed to take.
 
-        privileges (:obj:`~pyrogram.types.ChatPrivileges`, *optional*):
+        privileges (:obj:`~pyrogram.types.ChatAdministratorRights`, *optional*):
             Administrators only. Privileged actions that an administrator is able to take.
 
         subscription_until_date (:py:obj:`~datetime.datetime`, *optional*):
@@ -91,7 +91,7 @@ class ChatMember(Object):
         is_member: bool = None,
         can_be_edited: bool = None,
         permissions: "types.ChatPermissions" = None,
-        privileges: "types.ChatPrivileges" = None,
+        privileges: "types.ChatAdministratorRights" = None,
         subscription_until_date: datetime = None
     ):
         super().__init__(client)
@@ -163,7 +163,7 @@ class ChatMember(Object):
                 ),
                 custom_title=member.rank,
                 can_be_edited=member.can_edit,
-                privileges=types.ChatPrivileges._parse(member.admin_rights),
+                privileges=types.ChatAdministratorRights._parse(member.admin_rights),
                 client=client
             )
         elif isinstance(member, raw.types.ChannelParticipantBanned):
@@ -200,7 +200,7 @@ class ChatMember(Object):
                 status=enums.ChatMemberStatus.OWNER,
                 user=types.User._parse(client, users[member.user_id]),
                 custom_title=member.rank,
-                privileges=types.ChatPrivileges._parse(member.admin_rights),
+                privileges=types.ChatAdministratorRights._parse(member.admin_rights),
                 client=client
             )
         elif isinstance(member, raw.types.ChannelParticipantLeft):

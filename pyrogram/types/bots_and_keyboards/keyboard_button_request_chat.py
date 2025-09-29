@@ -47,10 +47,10 @@ class KeyboardButtonRequestChat(Object):
             Pass True to request a chat with the bot as a member.
             Otherwise, no additional restrictions are applied.
 
-        user_administrator_rights (:obj:`~pyrogram.types.ChatPrivileges`, *optional*):
+        user_administrator_rights (:obj:`~pyrogram.types.ChatAdministratorRights`, *optional*):
             Privileged actions that an user administrator is able to take.
 
-        bot_administrator_rights (:obj:`~pyrogram.types.ChatPrivileges`, *optional*):
+        bot_administrator_rights (:obj:`~pyrogram.types.ChatAdministratorRights`, *optional*):
             Privileged actions that an bot administrator is able to take.
     """
 
@@ -62,8 +62,8 @@ class KeyboardButtonRequestChat(Object):
         chat_has_username: bool = None,
         chat_is_created: bool = None,
         bot_is_member: bool = None,
-        user_administrator_rights: "types.ChatPrivileges" = None,
-        bot_administrator_rights: "types.ChatPrivileges" = None
+        user_administrator_rights: "types.ChatAdministratorRights" = None,
+        bot_administrator_rights: "types.ChatAdministratorRights" = None
     ):
         super().__init__()
 

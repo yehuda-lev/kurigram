@@ -336,11 +336,11 @@ class Chat(Object):
             The number of boosts the current user has applied to the current supergroup.
             Returned only in :meth:`~pyrogram.Client.get_chat`
 
-        channel_admin_rights (:obj:`~pyrogram.types.ChatPrivileges`, *optional*):
+        channel_admin_rights (:obj:`~pyrogram.types.ChatAdministratorRights`, *optional*):
             A suggested set of administrator rights for the bot, to be shown when adding the bot as admin to a channel.
             Returned only in :meth:`~pyrogram.Client.get_chat`
 
-        chat_admin_rights (:obj:`~pyrogram.types.ChatPrivileges`, *optional*):
+        chat_admin_rights (:obj:`~pyrogram.types.ChatAdministratorRights`, *optional*):
             A suggested set of administrator rights for the bot, to be shown when adding the bot as admin to a group.
             Returned only in :meth:`~pyrogram.Client.get_chat`
 
@@ -602,8 +602,8 @@ class Chat(Object):
         banned_count: Optional[int] = None,
         available_min_id: Optional[int] = None,
         boosts_applied: Optional[int] = None,
-        channel_admin_rights: Optional["types.ChatPrivileges"] = None,
-        chat_admin_rights: Optional["types.ChatPrivileges"] = None,
+        channel_admin_rights: Optional["types.ChatAdministratorRights"] = None,
+        chat_admin_rights: Optional["types.ChatAdministratorRights"] = None,
         bot_can_manage_emoji_status: Optional[bool] = None,
         can_delete_channel: Optional[bool] = None,
         can_pin_message: Optional[bool] = None,
@@ -1009,8 +1009,8 @@ class Chat(Object):
         parsed_chat.message_auto_delete_time = user.ttl_period
         parsed_chat.theme = await types.ChatTheme._parse(client, user.theme)
         parsed_chat.private_forward_name = user.private_forward_name
-        parsed_chat.chat_admin_rights = types.ChatPrivileges._parse(user.bot_group_admin_rights)
-        parsed_chat.channel_admin_rights = types.ChatPrivileges._parse(user.bot_broadcast_admin_rights)
+        parsed_chat.chat_admin_rights = types.ChatAdministratorRights._parse(user.bot_group_admin_rights)
+        parsed_chat.channel_admin_rights = types.ChatAdministratorRights._parse(user.bot_broadcast_admin_rights)
         # parsed_chat.premium_gifts
         parsed_chat.chat_background = types.ChatBackground._parse(client, user.wallpaper)
 
@@ -1617,11 +1617,11 @@ class Chat(Object):
         )
 
     # Set None as privileges default due to issues with partially initialized module, because at the time Chat
-    # is being initialized, ChatPrivileges would be required here, but was not initialized yet.
+    # is being initialized, ChatAdministratorRights would be required here, but was not initialized yet.
     async def promote_member(
         self,
         user_id: Union[int, str],
-        privileges: "types.ChatPrivileges" = None
+        privileges: "types.ChatAdministratorRights" = None
     ) -> bool:
         """Bound method *promote_member* of :obj:`~pyrogram.types.Chat`.
 
@@ -1645,7 +1645,7 @@ class Chat(Object):
                 Unique identifier (int) or username (str) of the target user.
                 For a contact that exists in your Telegram address book you can use his phone number (str).
 
-            privileges (:obj:`~pyrogram.types.ChatPrivileges`, *optional*):
+            privileges (:obj:`~pyrogram.types.ChatAdministratorRights`, *optional*):
                 New user privileges.
 
         Returns:
