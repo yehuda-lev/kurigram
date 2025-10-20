@@ -114,8 +114,19 @@ class Chat(Object):
         last_name (``str``, *optional*):
             Last name of the other party in a private chat, for private chats.
 
+        personal_photo (:obj:`~pyrogram.types.ChatPhoto`, *optional*):
+            Chat profile photo set by the current user for the contact.
+            This photo isn't returned in the list of chat photos.
+            Suitable for downloads only.
+
         photo (:obj:`~pyrogram.types.ChatPhoto`, *optional*):
-            Chat photo. Suitable for downloads only.
+            Chat photo.
+            Suitable for downloads only.
+
+        public_photo (:obj:`~pyrogram.types.ChatPhoto`, *optional*):
+            Chat profile photo visible if the main photo is hidden by privacy settings.
+            This photo isn't returned in the list of chat photos.
+            Suitable for downloads only.
 
         stories (List of :obj:`~pyrogram.types.Story`, *optional*):
             The list of chat's stories if available.
@@ -542,7 +553,9 @@ class Chat(Object):
         usernames: Optional[List["types.Username"]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        personal_photo: Optional["types.ChatPhoto"] = None,
         photo: Optional["types.ChatPhoto"] = None,
+        public_photo: Optional["types.ChatPhoto"] = None,
         stories: Optional[List["types.Story"]] = None,
         chat_background: Optional["types.ChatBackground"] = None,
         bio: Optional[str] = None,
@@ -678,7 +691,9 @@ class Chat(Object):
         self.usernames = usernames
         self.first_name = first_name
         self.last_name = last_name
+        self.personal_photo = personal_photo
         self.photo = photo
+        self.public_photo = public_photo
         self.stories = stories
         self.chat_background = chat_background
         self.bio = bio
@@ -1003,9 +1018,9 @@ class Chat(Object):
         parsed_chat.can_view_revenue = user.can_view_revenue
         parsed_chat.bot_can_manage_emoji_status = user.bot_can_manage_emoji_status
         parsed_chat.bio = user.about or None
-        # parsed_chat.personal_photo = user.personal_photo
-        # parsed_chat.photo = user.profile_photo
-        # parsed_chat.public_photo = user.fallback_photo
+        parsed_chat.personal_photo = types.ChatPhoto._parse(client, user.personal_photo, users[user.id].id, users[user.id].access_hash)
+        # parsed_chat.photo = types.ChatPhoto._parse(client, user.profile_photo, users[user.id].id, users[user.id].access_hash)
+        parsed_chat.public_photo = types.ChatPhoto._parse(client, user.fallback_photo, users[user.id].id, users[user.id].access_hash)
         # parsed_chat.bot_info = user.bot_info
 
         if user.pinned_msg_id:

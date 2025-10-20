@@ -409,7 +409,6 @@ class Gift(Object):
             publisher_chat=types.Chat._parse_chat(client, chats.get(utils.get_raw_peer_id(star_gift.released_by))),
             value_currency=star_gift.value_currency,
             value_amount=star_gift.value_amount,
-            drop_original_details_star_count=star_gift.drop_original_details_stars,
             is_upgraded=True,
             raw=star_gift,
             client=client

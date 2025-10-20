@@ -147,8 +147,19 @@ class User(Object, Update):
         phone_number (``str``, *optional*):
             User's phone number.
 
+        personal_photo (:obj:`~pyrogram.types.ChatPhoto`, *optional*):
+            Personal profile photo, to be shown instead of profile photo.
+            This photo isn't returned in the list of user photos.
+            Suitable for downloads only.
+
         photo (:obj:`~pyrogram.types.ChatPhoto`, *optional*):
-            User's or bot's current profile photo. Suitable for downloads only.
+            User's or bot's current profile photo.
+            Suitable for downloads only.
+
+        public_photo (:obj:`~pyrogram.types.ChatPhoto`, *optional*):
+            Fallback profile photo, displayed if no photo is present in photo or personal_photo, due to privacy settings.
+            This photo isn't returned in the list of user photos.
+            Suitable for downloads only.
 
         restrictions (List of :obj:`~pyrogram.types.Restriction`, *optional*):
             The list of reasons why this bot might be unavailable to some users.
@@ -412,7 +423,9 @@ class User(Object, Update):
         emoji_status: Optional["types.EmojiStatus"] = None,
         dc_id: Optional[int] = None,
         phone_number: Optional[str] = None,
+        personal_photo: Optional["types.ChatPhoto"] = None,
         photo: Optional["types.ChatPhoto"] = None,
+        public_photo: Optional["types.ChatPhoto"] = None,
         restrictions: Optional[List["types.Restriction"]] = None,
         reply_color: Optional["types.ChatColor"] = None,
         profile_color: Optional["types.ChatColor"] = None,
@@ -502,7 +515,9 @@ class User(Object, Update):
         self.emoji_status = emoji_status
         self.dc_id = dc_id
         self.phone_number = phone_number
+        self.personal_photo = personal_photo
         self.photo = photo
+        self.public_photo = public_photo
         self.restrictions = restrictions
         self.reply_color = reply_color
         self.profile_color = profile_color
@@ -676,9 +691,9 @@ class User(Object, Update):
         parsed_user.bot_can_manage_emoji_status = user.bot_can_manage_emoji_status
         parsed_user.display_gifts_button = user.display_gifts_button
         parsed_user.bio = user.about or None
-        # parsed_user.personal_photo = user.personal_photo
-        # parsed_user.profile_photo = user.profile_photo
-        # parsed_user.fallback_photo = user.fallback_photo
+        parsed_user.personal_photo = types.ChatPhoto._parse(client, user.personal_photo, users[user.id].id, users[user.id].access_hash)
+        # parsed_user.photo = types.ChatPhoto._parse(client, user.profile_photo, users[user.id].id, users[user.id].access_hash)
+        parsed_user.public_photo = types.ChatPhoto._parse(client, user.fallback_photo, users[user.id].id, users[user.id].access_hash)
         # parsed_user.bot_info = user.bot_info
         # parsed_user.bot_forum_view
 
