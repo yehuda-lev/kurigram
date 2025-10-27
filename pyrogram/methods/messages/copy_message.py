@@ -45,6 +45,8 @@ class CopyMessage:
         business_connection_id: str = None,
         allow_paid_broadcast: bool = None,
         paid_message_star_count: int = None,
+        reply_to_message_id: int = None,
+        reply_to_chat_id: Union[int, str] = None,
         reply_markup: Union[
             "types.InlineKeyboardMarkup",
             "types.ReplyKeyboardMarkup",
