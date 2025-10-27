@@ -37,8 +37,7 @@ class CopyMessage:
         caption_entities: List["types.MessageEntity"] = None,
         disable_notification: bool = None,
         message_thread_id: int = None,
-        reply_to_message_id: int = None,
-        reply_to_chat_id: Union[int, str] = None,
+        reply_parameters: "types.ReplyParameters" = None,
         schedule_date: datetime = None,
         protect_content: bool = None,
         has_spoiler: bool = None,
@@ -94,12 +93,9 @@ class CopyMessage:
                 Unique identifier for the target message thread (topic) of the forum.
                 For supergroups only.
 
-            reply_to_message_id (``int``, *optional*):
-                If the message is a reply, ID of the original message.
-
-            reply_to_chat_id (``int``, *optional*):
-                If the message is a reply, ID of the original chat.
-
+            reply_parameters (:obj:`~pyrogram.types.ReplyParameters`, *optional*):
+                Describes reply parameters for the message that is being sent.
+                
             schedule_date (:py:obj:`~datetime.datetime`, *optional*):
                 Date when the message will be automatically sent.
 
@@ -140,6 +136,55 @@ class CopyMessage:
         """
         message: types.Message = await self.get_messages(chat_id=from_chat_id, message_ids=message_id)
 
+        if any(
+            (
+                reply_to_message_id is not None,
+                reply_to_chat_id is not None,
+                quote_text is not None,
+                parse_mode is not None,
+                quote_entities is not None,
+                quote_offset is not None,
+            )
+        ):
+            if reply_to_message_id is not None:
+                log.warning(
+                    "`reply_to_message_id` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if reply_to_chat_id is not None:
+                log.warning(
+                    "`reply_to_chat_id` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if quote_text is not None:
+                log.warning(
+                    "`quote_text` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if parse_mode is not None:
+                log.warning(
+                    "`parse_mode` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if quote_entities is not None:
+                log.warning(
+                    "`quote_entities` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            if quote_offset is not None:
+                log.warning(
+                    "`quote_offset` is deprecated and will be removed in future updates. Use `reply_parameters` instead."
+                )
+
+            reply_parameters = types.ReplyParameters(
+                message_id=reply_to_message_id,
+                chat_id=reply_to_chat_id,
+                quote=quote_text,
+                quote_parse_mode=parse_mode,
+                quote_entities=quote_entities,
+                quote_position=quote_offset
+            )
+
         return await message.copy(
             chat_id=chat_id,
             caption=caption,
@@ -147,8 +192,7 @@ class CopyMessage:
             caption_entities=caption_entities,
             disable_notification=disable_notification,
             message_thread_id=message_thread_id,
-            reply_to_message_id=reply_to_message_id,
-            reply_to_chat_id=reply_to_chat_id,
+            reply_parameters=reply_parameters,
             schedule_date=schedule_date,
             protect_content=protect_content,
             has_spoiler=has_spoiler,
