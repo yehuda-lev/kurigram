@@ -41,6 +41,7 @@ class EditMessageText:
 
         show_caption_above_media: bool = None,
         disable_web_page_preview: bool = None,
+        business_connection_id: str = None,
     ) -> "types.Message":
         """Edit the text of messages.
 
