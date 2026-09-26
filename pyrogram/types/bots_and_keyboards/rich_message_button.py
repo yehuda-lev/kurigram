@@ -207,7 +207,10 @@ class RichMessageButton(Object):
         # `InlineButtonType` holds constructors a rich button cannot express, `inlineButtonTypeBuy`
         #  and `inlineButtonTypeGame` among them, and the server may add more. Falling through used
         #  to hand a `None` to `RichBlockButtons.buttons`, which then fails wherever it is read.
-        return RichMessageButton(text=button_text, style=button_style)
+        result = RichMessageButton(text=button_text, style=button_style)
+        result.raw = button
+
+        return result
 
     @overload
     async def write(
